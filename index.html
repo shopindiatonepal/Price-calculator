@@ -448,22 +448,20 @@
 <script>
 const CATEGORIES = [
   {label: 'Clothes', amt: 600},
-  {label: 'Shoes', amt: 750},
+  {label: 'Shoes', amt: 850},
   {label: 'Beauty', amt: 650},
-  {label: 'Healthcare', amt: 600},
-  {label: 'Electronic', amt: 650},
-  {label: 'Supplements', amt: 650},
+  {label: 'Healthcare', amt: 650},
+  {label: 'Electronic', amt: 750},
+  {label: 'Supplements', amt: 700},
   {label: 'Toys and accessories', amt: 600},
   {label: 'Stationery', amt: 600},
-  {label: 'Bags and luggage', amt: 700},
-  {label: 'Jewelry and watches', amt: 600},
-  {label: 'Home and kitchen', amt: 650},
-  {label: 'Mobile and accessories', amt: 600},
+  {label: 'Bags', amt: 700},
+  {label: 'Jewelry and watches', amt: 700},
+  {label: 'Home and kitchen', amt: 700},
   {label: 'Mobile', amt: 3000},
   {label: 'Laptop', amt: 5000},
   {label: 'Sports and fitness', amt: 700},
-  {label: 'Furniture', amt: 800},
-  {label: 'Automobile accessories', amt: 700},
+  {label: 'Automobile accessories', amt: 750},
   {label: 'Groceries and food', amt: 600},
   {label: 'Pet supplies', amt: 600},
   {label: 'Other', amt: 600},
@@ -583,7 +581,8 @@ function calc(){
     const weight = parseFloat(row.querySelector('.weight').value) || 0;
 
     const priceNPR = price * fx;
-    const perUnitFinal = priceNPR + categoryAmt;
+    const priceSurcharge = priceNPR * 0.10;
+    const perUnitFinal = priceNPR + categoryAmt + priceSurcharge;
     const subtotal = perUnitFinal * qty;
 
     row.querySelector('.subtotalval').textContent = fmt(subtotal);
