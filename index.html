@@ -447,14 +447,14 @@
 
 <script>
 const CATEGORIES = [
-  {label: 'Clothes', amt: 550},
+  {label: 'Clothes', amt: 600},
   {label: 'Shoes', amt: 750},
   {label: 'Beauty', amt: 650},
-  {label: 'Healthcare', amt: 550},
+  {label: 'Healthcare', amt: 600},
   {label: 'Electronic', amt: 650},
   {label: 'Supplements', amt: 650},
-  {label: 'Toys and accessories', amt: 550},
-  {label: 'Stationery', amt: 550},
+  {label: 'Toys and accessories', amt: 600},
+  {label: 'Stationery', amt: 600},
   {label: 'Bags and luggage', amt: 700},
   {label: 'Jewelry and watches', amt: 600},
   {label: 'Home and kitchen', amt: 650},
@@ -464,9 +464,9 @@ const CATEGORIES = [
   {label: 'Sports and fitness', amt: 700},
   {label: 'Furniture', amt: 800},
   {label: 'Automobile accessories', amt: 700},
-  {label: 'Groceries and food', amt: 550},
+  {label: 'Groceries and food', amt: 600},
   {label: 'Pet supplies', amt: 600},
-  {label: 'Other', amt: 550},
+  {label: 'Other', amt: 600},
 ];
 
 const FX = 1.70;
@@ -481,7 +481,7 @@ function fmt(n){
 }
 
 function categoryOptions(){
-  return CATEGORIES.map(c => `<option value="${c.amt}">${c.label} — रु ${c.amt}</option>`).join('');
+  return CATEGORIES.map(c => `<option value="${c.amt}">${c.label}</option>`).join('');
 }
 
 function addRow(){
@@ -572,34 +572,37 @@ function calc(){
   const lines = [];
   let orderTotal = 0;
   let totalPieces = 0;
+  let totalWeight = 0;
 
   rows.forEach((row, i) => {
     const categorySel = row.querySelector('.category');
     const categoryAmt = parseFloat(categorySel.value) || 0;
-    const categoryLabel = categorySel.options[categorySel.selectedIndex].text.split(' — ')[0];
+    const categoryLabel = categorySel.options[categorySel.selectedIndex].text;
     const price = parseFloat(row.querySelector('.price').value) || 0;
     const qty = parseInt(row.querySelector('.qtyval').textContent) || 1;
     const weight = parseFloat(row.querySelector('.weight').value) || 0;
 
     const priceNPR = price * fx;
-    const weightCharge = weight >= 1 ? weight * 200 : 0;
-    const perUnitFinal = priceNPR + categoryAmt + weightCharge;
+    const perUnitFinal = priceNPR + categoryAmt;
     const subtotal = perUnitFinal * qty;
 
     row.querySelector('.subtotalval').textContent = fmt(subtotal);
     orderTotal += subtotal;
     totalPieces += qty;
+    totalWeight += weight * qty;
 
     lines.push({label: 'Product ' + (i + 1) + ' — ' + categoryLabel + ' (' + qty + ' pc)', val: fmt(subtotal)});
   });
 
-  lines.push({label: 'Home delivery charge', val: fmt(delivery)});
+  const weightExtra = totalWeight > 1 ? (totalWeight - 1) * 200 : 0;
+  const finalDelivery = delivery + weightExtra;
+  lines.push({label: 'Home delivery (' + totalWeight.toFixed(2) + ' kg total)', val: fmt(finalDelivery)});
 
   document.getElementById('breakdownLines').innerHTML = lines.map(l =>
     `<div class="bline"><span class="l">${l.label}</span><span class="v">${l.val}</span></div>`
   ).join('');
 
-  const grand = orderTotal + delivery;
+  const grand = orderTotal + finalDelivery;
   document.getElementById('grandTotal').textContent = fmt(grand);
   document.getElementById('productCount').textContent = rows.length + (rows.length === 1 ? ' item' : ' items');
   document.getElementById('totalItems').textContent = totalPieces + (totalPieces === 1 ? ' piece total' : ' pieces total');
