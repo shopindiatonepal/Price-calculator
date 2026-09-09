@@ -596,13 +596,18 @@ function calc(){
 
   const weightExtra = totalWeight > 1 ? (totalWeight - 1) * 200 : 0;
   const finalDelivery = delivery + weightExtra;
+  const importSurcharge = totalWeight > 1 ? (totalWeight - 1) * 150 : 0;
+
+  if (importSurcharge > 0){
+    lines.push({label: 'Import cost surcharge (' + totalWeight.toFixed(2) + ' kg total)', val: fmt(importSurcharge)});
+  }
   lines.push({label: 'Home delivery (' + totalWeight.toFixed(2) + ' kg total)', val: fmt(finalDelivery)});
 
   document.getElementById('breakdownLines').innerHTML = lines.map(l =>
     `<div class="bline"><span class="l">${l.label}</span><span class="v">${l.val}</span></div>`
   ).join('');
 
-  const grand = orderTotal + finalDelivery;
+  const grand = orderTotal + importSurcharge + finalDelivery;
   document.getElementById('grandTotal').textContent = fmt(grand);
   document.getElementById('productCount').textContent = rows.length + (rows.length === 1 ? ' item' : ' items');
   document.getElementById('totalItems').textContent = totalPieces + (totalPieces === 1 ? ' piece total' : ' pieces total');
